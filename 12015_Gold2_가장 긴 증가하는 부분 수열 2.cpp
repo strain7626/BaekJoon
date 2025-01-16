@@ -1,50 +1,32 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
-int N, A[1000000], D[1000000];
+int N, arr[1000000];
+vector<int> LIS;
 
-void Div(int low, int high);
-
-void Front(int low, int high) {
-    if (low == high) {D[low] = 1;return;}
-    Div(low, high);
-    int mid = (low+high)/2;
-    for (int i = mid+1; i <= high; i++) {
-        int M = 0;
-        for (int j = low; j <= low+1; j++) {
-            if (A[i] > A[j] && M < D[j]) M = D[j];
-        }
-        D[i] += M;
+int FindIdx(int num) {
+    int low = 0, high = LIS.size()-1, mid;
+    while (low < high) {
+        mid = (low+high)/2;
+        if (LIS[mid] < num) {low = mid+1;}
+        else {high = mid;}
     }
+    return high;
 }
 
-void Back(int low, int high) {
-    if (low == high) {D[low] = 1;return;}
-    Div(low, high);
-    int mid = (low+high)/2;
-    for (int i = low; i <= mid; i++) {
-        int M = 0;
-        for (int j = mid+1; j <= high; j++) {
-            if (A[i] < A[j] && M < D[j]) M = D[j];
-        }
-        D[i] += M;
+int Solve() {
+    LIS.push_back(arr[0]);
+    for(int i=1;i<N;i++) {
+        if (LIS.back() < arr[i]) LIS.push_back(arr[i]);
+        else LIS[FindIdx(arr[i])] = arr[i];
     }
-}
-
-void Div(int low, int high) {
-    int mid = (low+high)/2;
-    Front(low,mid);Back(mid+1,high);
+    return LIS.size();
 }
 
 int main() {
     cin >> N;
-    for (int i=0;i<N;i++) cin >> A[i];
-    Front(0,N-1);
-    int M = 0;
-    for (int i=0;i<N;i++) if (M < D[i]) M = D[i];
-    cout << M;
-    
+    for(int i=0;i<N;i++) cin >> arr[i];
+    cout << Solve();
 }
