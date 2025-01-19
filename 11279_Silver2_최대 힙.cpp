@@ -1,18 +1,22 @@
 #include <iostream>
 #include <queue>
+#define endl "\n"
 using namespace std;
 
 int main()
 {
-    priority_queue<int, vector<int>> heap;
+    priority_queue<int> heap;
+    int N; cin >> N;
 
-    while (true) {
-        int N;
-        cin >> N;
-
-        if (!N) break;
-        heap.push(N);
-
-        cout << heap.size();
+    while (N--) {
+        int x; cin >> x;
+        if (x) heap.push(x);
+        else {
+            if (heap.empty()) cout << 0 << endl;
+            else { 
+                cout << heap.top() << endl;
+                heap.pop();
+            }
+        }
     }
 }
