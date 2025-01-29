@@ -40,8 +40,6 @@ void Solve() {
     result = DFS(0,0);
 }
 
-
-
 int main() {
     Input();
     Solve();
