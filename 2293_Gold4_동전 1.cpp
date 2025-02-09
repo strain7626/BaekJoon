@@ -1,31 +1,19 @@
 #include <iostream>
-#include <algorithm>
-
+#define endl "\n"
+#define MAX 10000
 using namespace std;
 
-int n,k;
-int DP[10001], Cs[101];
-
-void Input() {
-    cin >> n >> k;
-    for (int i = 1; i <= n; i++) {
-        cin >> Cs[i];
-        if (Cs[i] > 10000) Cs[i] = 0;
-    }
-    sort(Cs,Cs+n);
-}
+int n, k, V[100], DP[MAX+1] = {1};
 
 int main() {
-    Input();
-    
-    for (int c:Cs) {
-        if (c == 0) continue;
+    cin >> n >> k;
+    for (int i=0;i<n;i++) cin >> V[i];
 
-        DP[c] += 1;
-        for (int i = c+1; i <= k; i++)
-            DP[i] += DP[i-c];
+    for (int i = 0; i < n; i++) {
+        for (int j = V[i]; j <= k; j++) {
+            if (DP[j - V[i]]) DP[j] += DP[j - V[i]];
+        }
     }
 
     cout << DP[k];
-    return 0;
 }
