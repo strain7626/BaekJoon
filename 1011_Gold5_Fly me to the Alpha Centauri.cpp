@@ -1,20 +1,20 @@
 #include <iostream>
-#include <cmath>
-
+#define endl "\n"
 using namespace std;
 
-long long x,y;
-
 int main(){
-    int T;
-    cin >> T;
-    for (int i = 0; i < T; i++){
-        cin >> x >> y;
-        long long D = y-x;
-        long long cnt = (long long)sqrt(D-1)+1;
-        cout << cnt;
-        if (D > cnt*(cnt-1) && D <= cnt*cnt) cout << cnt*2-1 << endl;
-        else cout << cnt*2-2 << endl;
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    int T; cin >> T;
+    while (T--) {
+        int x, y; cin >> x >> y;
+        int dist = y-x;
+
+        int ans = 0;
+        while (dist > 0) {
+            ans++;
+            dist -= (ans+1)/2;
+        }
+        cout << ans << endl;
     }
-    return 0;   
 }
