@@ -1,82 +1,65 @@
-#include <queue>
-#include <vector>
-#include <iostream>
-#include <algorithm>
+#include <bits/stdc++.h>
+#define INF 1e9
 using namespace std;
 
-typedef pair<int,int> pos;
+typedef struct {
+    int y, x;
+} pos;
 
-/* 입력 */
-int         N, M;
-char        maze[50][50];
-
-/* Solve 용 */
-queue<pos>      startPos;
-queue<bool[6]>  haveKey;
-
-/* BFS 용 */
-int         visited[50][50];
-int         dy[] = {-1,1,0,0}, dx[] = {0,0,-1,1};
-
-bool canGo(int y, int x) {
-    if (y<0||y>=N||x<0||x>=M)   return false; // 범위
-    if (visited[y][x] != -1)    return false; // 방문
-
-    char c = maze[y][x];
-    if (c == '#')                                           return false; // 벽
-    if (c >= 'A' && c <= 'F' && !haveKey.front()[c-'A'])    return false; // 닫힌 문
-    
-    /* 그 외 */
-    return true;
-}
-
-// start에서 end로 갈때 최소거리 반환
-int BFS(pos start) {
-    for (int i=0;i<N;i++) for (int j=0;j<M;j++) visited[i][j] = -1;
-    visited[start.first][start.second] = 0;
-
-    queue<pos> Q;
-    Q.push(start);
-
-    while (!Q.empty()) {
-        int y = Q.front().first, x = Q.front().second;
-        Q.pop();
-
-        if (maze[y][x] == '1') return visited[y][x];
-        if (maze[y][x] >= 'a' && maze[y][x] <= 'f' && pos{y,x} != start) startPos.push({y,x});
-
-        for (int i = 0; i < 4; i++) {
-            int fy = y+dy[i], fx = x+dx[i];
-
-            if (canGo(fy,fx)) {
-                visited[fy][fx] = visited[y][x]+1;
-                Q.push({fy,fx});
-            }
-        }
-    }
-    
-    return 2e9;
-}
+int  N, M;
+char graph[50][50];
+int  vis[50][50][1<<6];
+int  dy[] = {-1,1,0,0}, dx[] = {0,0,-1,1};
+pos  ori_start;
 
 void Input() {
-    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
     cin >> N >> M;
-    for (int i=0;i<N;i++) for (int j=0;j<M;j++) {
-        cin >> maze[i][j];
-        if (maze[i][j] == '0') startPos.push({i,j});
+    for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) {
+        cin >> graph[i][j];
+        if (graph[i][j] == '0') {
+            ori_start = {i,j};
+            graph[i][j] = '.';
+        }
+        for (int k = 0; k < (1<<6); k++) vis[i][j][k] = INF;
     }
 }
 
-int Solve() {
-    int result = 2e9;
+int BFS(pos start, int key, int dist) {
+    queue<pos> Q;
+    Q.push(start);
+    vis[start.y][start.x][key] = dist;
 
-    while(!startPos.empty()) {
-        result = min(result, BFS(startPos.front()));
-        startPos.pop();
+    int ans = INF;
+
+    while (!Q.empty()) {
+        int y = Q.front().y, x = Q.front().x;
+        Q.pop();
+        
+        for (int i = 0; i < 4; i++) {
+            int fy = y+dy[i], fx = x+dx[i];
+            char c = graph[fy][fx];
+            
+            if (fy<0||fy>=N||fx<0||fx>=M) continue;
+            if (vis[fy][fx][key] <= vis[y][x][key]+1) continue;
+            if (c == '#' || ((c>='A'&&c<='F') && !(key & (1<<(c-'A'))))) continue;
+            
+            Q.push({fy,fx});
+            vis[fy][fx][key] = vis[y][x][key]+1;
+            
+            if (c == '1') 
+                ans = min(ans, vis[fy][fx][key]);
+            else if ((c>='a'&&c<='f') && !(key & (1<<(c-'a')))) 
+                ans = min(ans, BFS({fy,fx}, key|(1<<(c-'a')), vis[fy][fx][key]));
+        }
     }
+
+    return ans;
 }
 
 int main() {
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
     Input();
-    cout << Solve();
+    int ans = BFS(ori_start,0,0);
+    cout << (ans == INF ? -1 : ans);
 }
