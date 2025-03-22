@@ -8,7 +8,7 @@ typedef struct {
 
 int  N, M;
 char graph[50][50];
-int  vis[50][50][1<<6];
+int  vis[50][50][1<<6]; // key 별로 방문처리 두기, 초기값 INF 
 int  dy[] = {-1,1,0,0}, dx[] = {0,0,-1,1};
 pos  ori_start;
 
@@ -39,6 +39,7 @@ int BFS(pos start, int key, int dist) {
             int fy = y+dy[i], fx = x+dx[i];
             char c = graph[fy][fx];
             
+            // 안 되는 경우
             if (fy<0||fy>=N||fx<0||fx>=M) continue;
             if (vis[fy][fx][key] <= vis[y][x][key]+1) continue;
             if (c == '#' || ((c>='A'&&c<='F') && !(key & (1<<(c-'A'))))) continue;
@@ -46,6 +47,7 @@ int BFS(pos start, int key, int dist) {
             Q.push({fy,fx});
             vis[fy][fx][key] = vis[y][x][key]+1;
             
+            // 특수 경우
             if (c == '1') 
                 ans = min(ans, vis[fy][fx][key]);
             else if ((c>='a'&&c<='f') && !(key & (1<<(c-'a')))) 
