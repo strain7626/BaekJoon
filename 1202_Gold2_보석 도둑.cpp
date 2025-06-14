@@ -1,34 +1,34 @@
-#include <iostream>
-#include <queue>
-#include <algorithm>
-
+#include <bits/stdc++.h>
+#define MAXN 300000
 using namespace std;
-pair<int, int> P1;
-int N, K, result;
-int M[300000], V[300000], C[300000];
 
-int main(){
+
+int N, K, M[MAXN], V[MAXN], C[MAXN], value[MAXN];
+struct cmp {
+    bool operator()(int a, int b) {
+        return V[a] < V[b];
+    }
+};
+
+priority_queue<int,vector<int>,cmp> PQ_N;
+
+int main() {
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
     cin >> N >> K;
-    for (int i = 0; i < N; i++) cin >> M[i] >> V[i];
-    for (int i = 0; i < K; i++) cin >> C[i]; 
+    for (int i = 0; i < N; i++) {cin >> M[i] >> V[i];PQ_N.push(i);}
+    for (int i = 0; i < K; i++) cin >> C[i];
+
+
     sort(C, C+K);
     
-    for (int i = 0; i < K; i++) 
-    {
-        int max = 0;
-        for (int j = 0; j < N; j++) 
-        {
-            if (M[j] < C[i] && V[j] > max)
-            {
-                max = j;
-            }
-
-        }
-        M[i] = 100000001;
-        result += V[max];
+    for (int i = K-1; i >= 0; i--) {
+        while (M[PQ_N.top()] > C[i]) PQ_N.pop();
+        value[i] = V[PQ_N.top()];
+        PQ_N.pop();
     }
 
-    cout << result;
-
-    return 0;
+    int ans = 0;
+    for (int i = 0; i < K; i++) ans += value[i]; 
+    cout << ans;
 }
