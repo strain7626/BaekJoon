@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <set>
 using namespace std;
 
 int N, M;
@@ -23,10 +24,13 @@ int main() {
         Info[id[name]][(day-1)/7].second += 60*(h2-h1) + m2-m1;
     }
     
-    for (int i = 0; i < M/7; i++) for (pair<string,int> j : id) 
-        if (Info[j.second][i].first < 5 || Info[j.second][i].second < 60*60) id.erase(j.first);
+    set<string> ans;
+    for (pair<string,int> j : id) ans.insert(j.first);
 
-    if (!id.size()) cout << -1;
-    else for (pair<string,int> j : id)
-        cout << j.first << '\n';
+    for (int i = 0; i < M/7; i++) for (pair<string,int> j : id) 
+        if (ans.count(j.first) && (Info[j.second][i].first < 5 || Info[j.second][i].second < 60*60)) ans.erase(j.first);
+
+    if (!ans.size()) cout << -1;
+    else for (string a : ans)
+        cout << a << '\n';
 }

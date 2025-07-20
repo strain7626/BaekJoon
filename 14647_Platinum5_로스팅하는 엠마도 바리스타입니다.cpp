@@ -4,17 +4,22 @@ using namespace std;
 
 int N;
 vector<pair<int,int>> E[300001];
-int V[300001], DP[300001];
+int V[300001];
+long DP[300001];
 
-int DFS(int now, int parent, int dist) {
-    DP[now] = dist;
-
+void DFS(int now, int parent) {
     V[now] = 1;
     for (pair<int, int> i : E[now]) if (i.first != parent) {
-        V[now] += DFS(i.first, now, dist + i.second);
+        DFS(i.first, now);
+        DP[now] += i.second*V[i.first] + DP[i.first]; 
+        V[now] += V[i.first];
     }
+}
 
-    return 
+void DFS2(int now, int parent, int dist, int I) {
+    if (now != 1) DP[now] = DP[parent] + (I - V[now])*dist;
+    for (pair<int, int> i : E[now]) if (i.first != parent)
+        DFS2(i.first, now, i.second, I+V[now]-V[i.first]);
 }
 
 int main() {
@@ -25,7 +30,8 @@ int main() {
         int u, v, d; cin >> u >> v >> d;
         E[u].push_back({v, d}); E[v].push_back({u, d});
     }
-
-    cout << DFS(1, 0, 0) << '\n';
-    for (int i = 1; i <= N; i++) cout << DP[i] << ' ';
+    
+    DFS(1, 0);
+    DFS2(1,0,0,0);
+    for (int i = 1; i <= N; i++) cout << DP[i] << '\n';
 }
