@@ -1,0 +1,1 @@
+s,c,o,n=map(int,input().split());print(min((c+o*2)//6,(s+n)//3))

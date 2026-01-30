@@ -1,46 +1,21 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+using ll = long long;
 
-typedef long long ll;
-
-int             N;
-vector<bool>    A;
-vector<int>     B;
-pair<int,ll>    ans;
-vector<vector<ll>> DP;
+ll N,A[1000000],B[1000000],P[1000001];
 
 int main() {
-    cin.tie(0);cout.tie(0);ios_base::sync_with_stdio(0);
-    
+    cin.tie(0)->sync_with_stdio(0);
+
     cin >> N;
-    A.resize(N); B.resize(N); DP.resize(N); for (auto& dp : DP) dp.resize(N);
+    for (int i=0;i<N;i++) cin >> A[i];
+    for (int i=0;i<N;i++) cin >> B[i];
 
-    for (int i = 0; i < N; i++) {
-        bool t;
-        cin >> t;
-        A[i] = t;
-    }
-    for (int& b : B) cin >> b;
+    for (int i=N-1;i>=0;i--) P[i]=P[i+1]+B[i]*(A[i]?1:-1);
 
+    ll S=P[0],M=1;
+    for (int i=1;i<N;i++) if (P[i]>0) S+=P[i],M++;
 
+    cout << M << ' ' << S;
 }
-
-
-
-
-/*
-input :
-1 1 0 0 1
-1 2 3 4 5
-
-prefix sum :
-1 3 6 10 15 ->
-1 3 0 -4 1
-
-
-
-
-
-
-*/
