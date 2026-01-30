@@ -1,3 +1,4 @@
+import os
 from api.solved import get_problem_info
 from api.notion import create_page
 from pathlib import Path
@@ -15,6 +16,8 @@ int main() {
     
 }""", encoding="utf-8")
     print(f"파일이 생성되었습니다: {target_path}")
+
+    os.system(f'code "{target_path}"')
 
 def level_to_tier(level):
     # 티어 이름 리스트
