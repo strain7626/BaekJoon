@@ -1,6 +1,6 @@
 import os
 from api.solved import get_problem_info
-from api.notion import create_page
+# from api.notion import create_page
 from pathlib import Path
 
 def make_file(problem_id,ext):
@@ -50,7 +50,7 @@ def get_problem_simple_info(problem_id):
         'tags': tags
     }
 
-def upload(problem_id):
-    result = get_problem_simple_info(problem_id=problem_id)
-    create_page(problem_id=problem_id,title=result['title'],level=result['level'],tier=result['tier'],tags=result['tags'])
+# def upload(problem_id):
+#     result = get_problem_simple_info(problem_id=problem_id)
+#     create_page(problem_id=problem_id,title=result['title'],level=result['level'],tier=result['tier'],tags=result['tags'])
 
