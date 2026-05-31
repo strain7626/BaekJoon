@@ -1,15 +1,10 @@
-import requests
+from curl_cffi import requests
 
 def get_problem_info(problem_id):
     # solved.ac API URL
     url = f"https://solved.ac/api/v3/problem/show?problemId={problem_id}"
-    
-    headers = {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0"
-    }
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, impersonate="chrome")
 
     if response.status_code == 200:
         return response.json()
